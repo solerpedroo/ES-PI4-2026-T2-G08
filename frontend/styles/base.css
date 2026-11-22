@@ -442,6 +442,21 @@ a:focus-visible {
   position: relative;
 }
 
+.file-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px var(--space-sm);
+  min-width: 0;
+}
+
+.file-picker-name {
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
 .input-group input {
   width: 100%;
   min-height: 42px;
