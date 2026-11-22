@@ -210,9 +210,17 @@
    */
   function buildListRow(card) {
     const tr = document.createElement("tr");
+    tr.classList.add("record-clickable");
+    tr.addEventListener("click", (event) => {
+      if (!event.target.closest("select")) openDetail(card);
+    });
 
     const nameTd = document.createElement("td");
-    nameTd.textContent = card.dataset.activity;
+    const nameButton = document.createElement("button");
+    nameButton.type = "button";
+    nameButton.className = "record-title";
+    nameButton.textContent = card.dataset.activity;
+    nameTd.append(nameButton);
     const tipoTd = document.createElement("td");
     tipoTd.textContent = card.dataset.tipo;
     const talhaoTd = document.createElement("td");
@@ -706,9 +714,8 @@
     const raw = values;
     values = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, window.AgroLocal.escape(value)]));
     const card = document.createElement("article");
-    card.className = "kanban-card";
+    card.className = "kanban-card record-clickable";
     card.dataset.id = raw.id || window.AgroLocal.id();
-    card.tabIndex = 0;
     card.draggable = true;
     card.dataset.activity = raw.nome;
     card.dataset.tipo = raw.tipo;
@@ -732,7 +739,7 @@
 
     card.innerHTML = `
       <div class="kanban-card-top">
-        <span class="kanban-card-title">${values.nome}</span>
+        <button type="button" class="kanban-card-title record-title">${values.nome}</button>
         <span class="badge ${badgeTone}">${values.tipo}</span>
       </div>
       <span class="kanban-card-meta"><svg viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>${values.talhao}</span>
@@ -821,13 +828,13 @@
     if (!board) return;
 
     board.addEventListener("click", (event) => {
+      const card = event.target.closest(".kanban-card");
+      if (!card || card === draggedCard) return;
       const btn = event.target.closest("[data-card-action]");
-      if (!btn) return;
-      const card = btn.closest(".kanban-card");
-      if (!card) return;
+      if (!btn && event.target.closest("button:not(.record-title), .action-menu-wrap")) return;
       activeCard = card;
 
-      const action = btn.dataset.cardAction;
+      const action = btn?.dataset.cardAction || "detail";
       if (action === "detail") openDetail(card);
       else if (action === "edit") openEditForm(card);
       else if (action === "complete") openCompleteConfirm(card);
