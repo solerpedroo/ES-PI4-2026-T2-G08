@@ -132,15 +132,20 @@
     return node("span", labels[text] || text, "badge badge-" + tone);
   }
   const reportDetail = (error) => toast("error", "Consulta não concluída", error.message);
+  function clearPhotoInput(input) {
+    input.value = "";
+    input.dispatchEvent(new Event("input"));
+  }
   function row(record) {
     const tr = node("tr"); tr.dataset.id = record.id; tr.dataset.occ = record.titulo; tr.dataset.status = labels[record.status]; tr.dataset.talhao = record.talhaoNome || "Propriedade";
-    const name = node("td", null, "col-occ-name"), details = node("button", record.titulo, "occ-detail-link");
+    tr.classList.add("record-clickable");
+    const name = node("td", null, "col-occ-name"), details = node("button", record.titulo, "record-title");
     details.type = "button"; details.dataset.rowAction = "detail";
-    details.addEventListener("click", () => showDetail(record.id).catch(reportDetail)); name.append(details);
+    tr.addEventListener("click", () => showDetail(record.id).catch(reportDetail)); name.append(details);
     tr.append(name, node("td", record.tipo, "col-muted"), node("td", record.talhaoNome || "Geral da propriedade", "col-muted"), node("td", date(record.data), "col-muted"));
     const priority = node("td"), status = node("td"); priority.append(badge(record.prioridade)); status.append(badge(record.status, "status"));
     if (record.excluida) status.append(node("span", "Excluída", "badge badge-neutral"));
-    tr.append(priority, status, node("td", "Abrir pelo título", "col-muted")); return tr;
+    tr.append(priority, status); return tr;
   }
 
   async function showDetail(id) {
@@ -152,7 +157,7 @@
     const photoImg = $("[data-detail-photo]");
     const photoMeta = $("[data-detail-photo-meta]");
     const photoInput = $("[data-occ-foto-detail]");
-    if (photoInput) photoInput.value = "";
+    clearPhotoInput(photoInput);
     $("[data-occ-photo-error]").textContent = "";
     $("[data-detail-title]").textContent = record.titulo; $("[data-detail-subtitle]").textContent = `${record.talhaoNome || "Geral da propriedade"} · ${date(record.data)}`;
     $("[data-detail-description]").textContent = record.descricao || "Sem descrição informada.";
@@ -301,7 +306,7 @@
         if (arquivo) {
           const comFoto = await enviarFoto(saved.id, saved.versao, arquivo, $("[data-error-for='conteudoBase64']", form));
           if (comFoto) atual = comFoto;
-          if (fotoInput) fotoInput.value = "";
+          clearPhotoInput(fotoInput);
         }
         closeModals();
         await showDetail(atual.id);
