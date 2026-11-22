@@ -92,10 +92,11 @@
     const body = $("[data-stock-table] tbody");
     body.replaceChildren(...shown.map(p => {
       const row = document.createElement("tr");
+      row.className = "record-clickable";
       row.dataset.id = p.id;
       const cls = p.status === "Crítico" ? "badge-error" : p.status === "Baixo" ? "badge-warning" : "badge-success";
       const menuId = "stock-menu-" + p.id;
-      row.innerHTML = `<td class="col-product-name">${esc(p.nome)}</td><td class="col-muted">${esc(p.categoria)}</td>
+      row.innerHTML = `<td class="col-product-name"><button class="record-title" type="button">${esc(p.nome)}</button></td><td class="col-muted">${esc(p.categoria)}</td>
         <td>${qty(p.saldo)}</td><td class="col-muted">${esc(p.unidade)}</td><td class="col-muted">${qty(p.minimo)}</td>
         <td><span class="badge ${cls}">${esc(p.status)}</span></td><td class="col-actions"><div class="action-menu-wrap">
         <button type="button" class="icon-btn icon-btn--sm" data-popover-trigger aria-controls="${menuId}" aria-expanded="false" aria-label="Ações de ${esc(p.nome)}">⋮</button>
@@ -239,10 +240,12 @@
     }
 
     $("[data-stock-table] tbody").addEventListener("click", e => {
-      const button = e.target.closest("[data-operation]"); if (!button) return;
-      const product = products.find(p => p.id === button.closest("tr").dataset.id); if (!product) return;
+      const row = e.target.closest("tr[data-id]");
+      const button = e.target.closest("[data-operation]");
+      if (!row || (!button && e.target.closest(".col-actions"))) return;
+      const product = products.find(p => p.id === row.dataset.id); if (!product) return;
       active = product;
-      const operation = button.dataset.operation;
+      const operation = button?.dataset.operation || "detail";
       if (operation === "detail") { details(product); return; }
       if (["entrada", "saida", "ajuste"].includes(operation)) { openMovement(operation, product); return; }
       if (operation === "editar") {
