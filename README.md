@@ -2,17 +2,18 @@
 
 Aplicação web para **centralizar a operação de propriedades rurais**: propriedades, talhões, safras, atividades, estoque, ocorrências, custos e indicadores do painel. O servidor Java entrega a API e o frontend na mesma origem; o MongoDB persiste os dados por propriedade autenticada.
 
-- **Repositório**: [`PI_IV_TIME_8`](https://github.com/solerpedroo/PI_IV_TIME_8)
+- **Repositório**: [`ES-PI4-2026-T2-G08`](https://github.com/solerpedroo/ES-PI4-2026-T2-G08)
 - **Manual do usuário**: [`docs/15-manual-do-usuario.md`](docs/15-manual-do-usuario.md)
-- **Contexto acadêmico**: Projeto Integrador IV — Engenharia de Software — PUC-Campinas (2026)
+- **Contexto acadêmico**: Projeto Integrador IV — Engenharia de Software — PUC-Campinas (2026) — Turma 2, Grupo 08
 - **Documento de produto (referência)**: [`docs/AgroGestao_Projeto.md`](docs/AgroGestao_Projeto.md)
 - **Requisitos do MVP (RF, RNF, RN)**: [`docs/02-requisitos.md`](docs/02-requisitos.md)
 - **Casos de uso**: [`docs/03-casos-de-uso.md`](docs/03-casos-de-uso.md)
 - **Arquitetura (componentes, portas e fluxo)**: [`docs/04-arquitetura.md`](docs/04-arquitetura.md)
 - **Dicionário de dados**: [`docs/05-dicionario-de-dados.md`](docs/05-dicionario-de-dados.md)
+- **Contrato da API**: [`docs/06-contrato-api.md`](docs/06-contrato-api.md)
 - **Plano de testes (estratégia, ambiente e casos)**: [`docs/09-plano-de-testes.md`](docs/09-plano-de-testes.md)
 - **Rastreabilidade (requisito → implementação → teste)**: [`docs/13-rastreabilidade.md`](docs/13-rastreabilidade.md)
-- **Project no GitHub**: [PI_IV_TIME_8 · Project nº 3](https://github.com/users/solerpedroo/projects/3)
+- **Project no GitHub**: [Project nº 3](https://github.com/users/solerpedroo/projects/3)
 
 ## 👥 Equipe
 
@@ -30,15 +31,18 @@ Time 8 — Projeto Integrador IV (2026)
 
 Com base no documento de produto e nas issues do Project, o MVP contempla:
 
-- **Autenticação**: cadastro, confirmação de e-mail, login, recuperação/redefinição de senha e sessão Bearer.
+- **Autenticação**: cadastro (com ou sem fazenda, no fluxo de convite), confirmação de e-mail, login, recuperação/redefinição de senha e sessão autenticada.
 - **Propriedades**: CRUD, seleção do contexto ativo e isolamento dos dados por propriedade.
-- **Talhões (Áreas de Cultivo)**: cadastro/edição, vínculos com atividades/ocorrências/custos e filtros entre telas.
-- **Safras e culturas**: planejamento de ciclo, vínculo com talhões e proteções contra exclusão/edição incompatível.
-- **Atividades**: Kanban/lista, planejamento (responsável, horário, prioridade, safra), transições de status, cancelamento e histórico persistente.
+- **Equipe**: membros locais, convite por e-mail/link, aceite e telas liberadas por colaborador.
+- **Talhões (Áreas de Cultivo)**: cadastro/edição, georreferenciamento (ponto/polígono), vínculos com atividades/ocorrências/custos e filtros entre telas.
+- **Safras e culturas**: catálogo de culturas, planejamento de ciclo, vínculo com talhões e proteções contra exclusão/edição incompatível.
+- **Colheitas**: registro de produção por safra e talhão, com unidades kg/t/sc e produtividade.
+- **Atividades**: Kanban/lista, planejamento (responsável, horário, prioridade, safra), evidência fotográfica, transições de status, cancelamento e histórico persistente.
 - **Estoque (Insumos)**: catálogo, entradas/saídas/ajustes, histórico e indicadores (Normal/Baixo/Crítico), sem negativar saldo.
-- **Ocorrências**: registro, timeline, resolução, exclusão lógica e resumo mensal.
-- **Custos**: lançamentos, indicadores e vínculo com a operação da propriedade.
+- **Ocorrências**: registro, timeline, evidência fotográfica, resolução, exclusão lógica e resumo mensal.
+- **Custos e orçamento**: lançamentos, orçamento planejado por safra, indicadores e vínculo com a operação.
 - **Manutenção**: equipamentos, preventivas, intervenções e custos em Maquinário vinculados à operação.
+- **Relatórios**: consolidação de safra, propriedade, atividades e estoque.
 - **Dashboard**: visão geral operacional a partir dos módulos integrados.
 - **Notificações**: sino com alertas reais (atraso, estoque, ocorrência, atividades do dia), navegação ao registro e leitura/preferências persistentes.
 - **Configurações / Perfil**: dados pessoais, preferências, propriedade padrão, troca de e-mail/senha e logout.
@@ -64,7 +68,7 @@ Este projeto **não** implementa no MVP:
 - **Java 21** puro: dois processos complementares
   - **`backend/api`** — HTTP manual na porta **8080** (rotas `/api/**`, estáticos, MongoDB)
   - **`backend/serversocket`** — TCP + objetos serializados na porta **3000** (validações e cálculos; padrão Cliente–Servidor da disciplina)
-- A API HTTP delega ao ServerSocket via `servicos/ClienteDeAlgoritmos` (ex.: cadastro). Ver [`backend/serversocket/README.md`](backend/serversocket/README.md).
+- A API HTTP delega ao ServerSocket via `servicos/integracao/ClienteDeAlgoritmos` (ex.: cadastro). Ver [`backend/serversocket/README.md`](backend/serversocket/README.md).
 - Sem Spring e sem Maven no servidor principal
 - Driver oficial **MongoDB** (`lib/`)
 - Gateway Java opcional (`backend/gateway`)
@@ -100,8 +104,8 @@ O script **`emular.sh`** (ou **`emular.bat`** no Windows) faz o trabalho pesado:
 ### Passo 1 — Obter o código
 
 ```bash
-git clone https://github.com/solerpedroo/PI_IV_TIME_8.git
-cd PI_IV_TIME_8
+git clone https://github.com/solerpedroo/ES-PI4-2026-T2-G08.git
+cd ES-PI4-2026-T2-G08
 ```
 
 Todos os comandos seguintes assumem que você está **na raiz** do repositório (onde ficam `emular.sh`, `frontend/` e `backend/`).
@@ -169,8 +173,8 @@ Endpoints úteis:
 Depois que o `.env` já estiver configurado, o fluxo é sempre o mesmo:
 
 ```bash
-cd PI_IV_TIME_8    # se ainda não estiver na pasta
-bash emular.sh     # ou emular.bat no Windows
+cd ES-PI4-2026-T2-G08    # se ainda não estiver na pasta
+bash emular.sh           # ou emular.bat no Windows
 ```
 
 Não é preciso `set -a && . ./.env`: o `emular.sh` carrega o `.env` automaticamente.
@@ -189,7 +193,7 @@ O modo `--memoria` existe **apenas** para suítes de teste; **não** emule o pro
 ## 📁 Estrutura do projeto
 
 ```text
-PI_IV_TIME_8/
+ES-PI4-2026-T2-G08/
 ├── emular.sh / emular.bat    # subir app com MongoDB Atlas (comando principal)
 ├── scripts/                  # apoio Windows (carregar-env.ps1, emular.ps1)
 ├── frontend/                 # HTML, CSS, JS e assets da interface
@@ -198,9 +202,12 @@ PI_IV_TIME_8/
 │   └── Assets/               # imagens
 ├── backend/
 │   ├── api/                  # API HTTP + arquivos estáticos (ponto de entrada)
+│   ├── serversocket/         # validações e cálculos via TCP (porta 3000)
 │   ├── gateway/              # proxy Java opcional para /api/**
-│   └── core/                 # modelo Mongo/Atlas e testes de domínio
-├── docs/                     # produto, contratos por módulo, Atlas, design
+│   ├── core/                 # modelo Mongo/Atlas e testes de domínio
+│   ├── mongo-schema/         # validadores $jsonSchema (mongosh)
+│   └── ESTRUTURA.md          # mapa das pastas do backend
+├── docs/                     # produto, contratos, dicionário, Atlas, design
 ├── tests/                    # e2e Playwright e integração Node
 ├── slides/                   # pitch / apresentação
 └── README.md
@@ -209,20 +216,24 @@ PI_IV_TIME_8/
 ## ✅ Funcionalidades (visão por módulos)
 
 ### 🔐 Autenticação e sessão
-- Cadastro, confirmação de e-mail, login e recuperação de senha
-- Token Bearer e contexto de propriedade ativa
+- Cadastro (dono com fazenda ou colaborador só com conta), confirmação de e-mail, login e recuperação de senha
+- Sessão autenticada e contexto de propriedade ativa
 
-### 🏡 Propriedades e talhões
+### 🏡 Propriedades, equipe e talhões
 - Múltiplas propriedades por usuário
-- Áreas de cultivo com cultura, hectares e status
+- Equipe com convite por link e permissões de tela
+- Áreas de cultivo com cultura, hectares, status e mapa
 - Navegação filtrada entre atividades, ocorrências e custos (`?talhao=`)
 
-### 🌱 Safras
+### 🌱 Safras, culturas e colheitas
+- Catálogo de culturas por propriedade
 - Ciclo de safra vinculado a talhões
+- Registro de colheita com produtividade
 - Cultura derivada e proteções de vínculo com atividades
 
 ### ✅ Atividades
 - Planejamento completo e execução (Pendente → Agendada → Em andamento → Concluída)
+- Evidência fotográfica opcional após o cadastro
 - Cancelamento com motivo e histórico após reinício
 - Menu, lista e arraste usam a mesma regra/API de status
 
@@ -231,11 +242,16 @@ PI_IV_TIME_8/
 - Concorrência sem saldo negativo
 
 ### 🚨 Ocorrências
-- Timeline, resolução e exclusão lógica
+- Timeline, resolução, exclusão lógica e foto de evidência
 - Resumo mensal por data real de resolução
 
-### 💰 Custos e dashboard
-- Lançamentos e indicadores da safra/operação
+### 🔧 Manutenção
+- Equipamentos, preventivas e intervenções
+- Custo em Maquinário gerado a partir da intervenção
+
+### 💰 Custos, orçamento, relatórios e dashboard
+- Lançamentos e orçamento planejado por safra
+- Relatórios de safra, propriedade, atividades e estoque
 - Painel geral com visão consolidada
 
 ### ⚙️ Configurações
@@ -276,7 +292,7 @@ Plano de testes (tipos, ambiente, dados, casos e critérios de aprovação): [`d
 
 Relatório da última execução: [`docs/10-relatorio-de-testes.md`](docs/10-relatorio-de-testes.md).
 
-Documentação por módulo: [`docs/atividades.md`](docs/atividades.md), [`docs/estoque.md`](docs/estoque.md), [`docs/ocorrencias.md`](docs/ocorrencias.md), [`docs/notificacoes.md`](docs/notificacoes.md), [`docs/perfil.md`](docs/perfil.md), [`docs/safras.md`](docs/safras.md).
+Documentação por módulo: [`docs/atividades.md`](docs/atividades.md), [`docs/estoque.md`](docs/estoque.md), [`docs/ocorrencias.md`](docs/ocorrencias.md), [`docs/notificacoes.md`](docs/notificacoes.md), [`docs/perfil.md`](docs/perfil.md), [`docs/safras.md`](docs/safras.md), [`docs/colheita.md`](docs/colheita.md), [`docs/manutencao.md`](docs/manutencao.md), [`docs/orcamento.md`](docs/orcamento.md), [`docs/georreferenciamento.md`](docs/georreferenciamento.md).
 
 ## 🛟 Troubleshooting
 
@@ -298,16 +314,22 @@ Com sessão autenticada, a API é a fonte de verdade. O cache do navegador é c�
 ## 🔗 Materiais de apoio
 
 - **Documento de produto**: [`docs/AgroGestao_Projeto.md`](docs/AgroGestao_Projeto.md)
+- **Manual do usuário**: [`docs/15-manual-do-usuario.md`](docs/15-manual-do-usuario.md)
 - **Requisitos do MVP**: [`docs/02-requisitos.md`](docs/02-requisitos.md) — requisitos funcionais e não funcionais, regras de negócio, critérios de aceite e rastreabilidade
+- **Casos de uso**: [`docs/03-casos-de-uso.md`](docs/03-casos-de-uso.md)
 - **Arquitetura**: [`docs/04-arquitetura.md`](docs/04-arquitetura.md) — frontend, API HTTP, ServerSocket, MongoDB e gateway opcional, com portas, fluxo de requisição, segurança e limitações
+- **Contrato da API**: [`docs/06-contrato-api.md`](docs/06-contrato-api.md)
 - **Matriz de rastreabilidade**: [`docs/13-rastreabilidade.md`](docs/13-rastreabilidade.md) — cada requisito ligado à tela, à rota, ao código e ao teste, com a situação da última execução
 - **Plano de testes**: [`docs/09-plano-de-testes.md`](docs/09-plano-de-testes.md) — o que é automatizado, manual ou depende de ambiente externo, com casos, status inicial e critérios de aprovação
+- **Relatório de testes**: [`docs/10-relatorio-de-testes.md`](docs/10-relatorio-de-testes.md)
 - **Modelo de dados**: [`docs/modelo-dados.md`](docs/modelo-dados.md)
 - **Dicionário de dados**: [`docs/05-dicionario-de-dados.md`](docs/05-dicionario-de-dados.md)
+- **Relatório do projeto**: [`docs/Relatorio_AgroGestao.docx`](docs/Relatorio_AgroGestao.docx)
+- **Trabalho de QA**: [`docs/TrabalhoQA (1).docx`](docs/TrabalhoQA%20(1).docx)
 - **Pitch / slides**: [`slides/`](slides/)
-- **Backend (detalhe)**: [`backend/README.md`](backend/README.md)
+- **Backend (detalhe)**: [`backend/README.md`](backend/README.md) e [`backend/ESTRUTURA.md`](backend/ESTRUTURA.md)
 - **MongoDB Atlas**: [`docs/mongodb-atlas.md`](docs/mongodb-atlas.md)
 
 ## 📄 Observação acadêmica
 
-Este repositório é o entregável do **Projeto Integrador IV** (PUC-Campinas). Os documentos em `docs/` e o Project no GitHub são a referência de requisitos, escopo e evidência de aceite. Uso restrito ao contexto acadêmico da disciplina, salvo decisão explícita do grupo.
+Este repositório (`ES-PI4-2026-T2-G08`) é o entregável do **Projeto Integrador IV** (PUC-Campinas, Turma 2, Grupo 08). Os documentos em `docs/` e o Project no GitHub são a referência de requisitos, escopo e evidência de aceite. Uso restrito ao contexto acadêmico da disciplina, salvo decisão explícita do grupo.
