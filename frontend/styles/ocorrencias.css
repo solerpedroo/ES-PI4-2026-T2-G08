@@ -45,10 +45,6 @@
   font-size: 13px;
 }
 
-.col-actions {
-  text-align: right;
-}
-
 .occ-table-card .empty-state {
   margin: 16px 20px;
   border: 1px dashed var(--border);
@@ -109,8 +105,6 @@
 .occ-filters .date-picker-trigger,
 .occ-filters .select-trigger { min-height: 36px; padding: 6px 10px; }
 .occ-message { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
-.occ-detail-link { border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; padding: 4px 0; overflow-wrap: anywhere; }
-.occ-detail-link:hover { text-decoration: underline; }
 [data-modal="occ-form"] .modal { max-height: 90vh; overflow-y: auto; }
 [data-modal="occ-detail"] .modal { width: min(760px, 100%); display: flex; flex-direction: column; }
 [data-modal="occ-detail"] .modal-body-scroll { min-height: 0; flex: 1; }
