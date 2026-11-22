@@ -88,6 +88,25 @@
   background: rgba(244, 247, 242, 0.7);
 }
 
+.record-clickable {
+  cursor: pointer;
+}
+
+.record-title {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.record-clickable:hover .record-title,
+.record-title:focus-visible {
+  text-decoration: underline;
+}
+
 /* -------------------------------------------------------------------------- */
 /* Metric Card — variação (Value Row: valor + delta), extra ao base.css       */
 /* --------------------------------------------------------------------------
@@ -612,7 +631,12 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  cursor: grab;
+  cursor: pointer;
+}
+
+.kanban-card:hover,
+.kanban-card:focus-within {
+  border-color: var(--border-strong);
 }
 
 .kanban-card-top {
@@ -673,6 +697,7 @@
 }
 
 .kanban-card.is-dragging {
+  cursor: grabbing;
   opacity: 0.5;
 }
 
